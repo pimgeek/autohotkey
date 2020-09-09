@@ -36,7 +36,7 @@
   ; 如果同时按下 Ctrl 键，等同于 Ctrl + 下
   ^!j::Send {LCtrl down}{Down}
   ; 如果同时按下 Ctrl + j，等同于 Ctrl + 下
-  ^j::Send {LCtrl down}{Down}
+  ;^j::Send {LCtrl down}{Down}
   ; 如果同时按下 Ctrl + Shift + j，则模仿 Ctrl + Shift + 下
   ^+j::Send {LCtrl down}{LShift down}{Down}
 
@@ -47,7 +47,7 @@
   ; 如果同时按下 Ctrl 键，等同于 Ctrl + 上
   ^!k::Send {LCtrl down}{Up}
   ; 如果同时按下 Ctrl + k，等同于 Ctrl + 上
-  ^k::Send {LCtrl down}{Up}
+  ;^k::Send {LCtrl down}{Up}
   ; 如果同时按下 Ctrl + Shift + k，则模仿 Ctrl + Shift + 上
   ^+k::Send {LCtrl down}{LShift down}{Up}
 
@@ -57,8 +57,6 @@
   +!l::Send {LAlt down}{Right}
   ; 如果同时按下 Ctrl 键，等同于 Ctrl + 右
   ^!l::Send {LCtrl down}{Right}
-  ; Alt + o 也映射为 Alt + 右（代表 Zoom Out）
-  !i::Send {LAlt down}{Right}
   ; 如果同时按下 Ctrl + Shift + l，则模仿 Ctrl + Shift + 右
   ^+l::Send {LCtrl down}{LShift down}{Right}
   ; 如果按下 Ctrl + Win + l，则模仿 Ctrl + Win + 右
@@ -68,9 +66,13 @@
 
 ; 把 Alt + m 映射为编辑模式开启键
 !m::Send {F2}
+; 用右侧的 Alt 键模拟 F10，唤起讯飞语音输入
+RAlt::F10
 
-; 把 Alt + v 映射为粘贴键
-!v::Send {Ctrl down}{v}{Ctrl up}
+; 用 Capslock 模拟鼠标左键点击
+#ifWinActive, with Flash Piano:
+Capslock::LButton
+#IfWinActive
 
 ;;; TheBrain 快捷键
 ; 在 TheBrain 8 中，输入 Alt + h/j/k/l 可以快速移动光标位置
@@ -83,20 +85,81 @@
 ; 在 TheBrain 8 中，输入 Alt + ; 可以快速添加新的孤立节点
 #IfWinActive ahk_class SunAwtFrame
 !SC027::Send {Tab}{Enter}
+Capslock::
+  Send {F9}
+  ; 确保大写锁定永远关闭
+  SetCapsLockState, Off
+  SetCapsLockState, AlwaysOff
+return
 #IfWinActive
 ; 在 TheBrain8 中，输入 Alt + z 可以获取
 ; 节点标题中的 Zettel 编号（如果有的话）
+
+CopyTheBrainOutlineTitle() {
+  Sleep, 100
+  Send, {F2}
+  Sleep, 200
+  Send, {Ctrl down}{a}{Ctrl up}
+  Sleep, 200
+  Send, {Ctrl down}{c}{Ctrl up}
+  Sleep, 120
+  Send, {Esc}
+}
+
 #IfWinActive ahk_class SunAwtFrame
 !z::
-Send, {F2}
-Sleep 60
-Send, {Ctrl down}{a}{Ctrl up}
-Sleep 60
-Send, {Ctrl down}{c}{Ctrl up}
-Sleep 60
-Send, {Esc}
-Sleep 60
-zettel_array := StrSplit(clipboard, "-")
-clipboard := zettel_array[1]
+  CopyTheBrainOutlineTitle()
+  Sleep, 180
+  zettel_array := StrSplit(clipboard, "-")
+  clipboard := zettel_array[1]
 return
+
+!v::
+  Send, {F2}
+  Sleep, 120
+  Send, {Home}
+  Sleep, 120
+  Send, {Ctrl down}{v}{Ctrl up}
+  Sleep, 80
+  Send, -
+  Sleep, 80
+  Send, {Left}
+return
+
+^g::
+  CopyTheBrainOutlineTitle()
+  zettel_array := StrSplit(clipboard, "-")
+  clipboard := zettel_array[1]
+  Sleep, 160
+  year_id := SubStr(clipboard, 1, 4)
+  month_id := SubStr(clipboard, 5, 2)
+  day_id := SubStr(clipboard, 7, 2)
+  clipboard := year_id . "-" . month_id . "-" . day_id
+  Sleep, 120
+  Send, {Ctrl down}{p}{Ctrl up}
+  Sleep, 300
+  Send, %clipboard%
+  Sleep, 360
+  Send, {Down}
+  Sleep, 120
+  Send, {Enter}
+  Sleep, 300
+  Send, {Left}
+  Sleep, 80
+  CopyTheBrainOutlineTitle()
+  date_str := clipboard
+  Sleep, 80
+  year_id := SubStr(date_str, 1, 4)
+  month_id := SubStr(date_str, 6, 2)
+  clipboard := year_id . "-" . month_id
+  Sleep, 120
+  Send, {Ctrl down}{p}{Ctrl up}
+  Sleep, 300
+  Send, %clipboard%
+  Sleep, 360
+  Send, {Down}
+  Sleep, 120
+  Send, {Enter}
+return
+
 #IfWinActive
