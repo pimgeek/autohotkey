@@ -76,6 +76,7 @@
 #IfWinActive
 ; 在 TheBrain8 中，输入 Alt + z 可以获取
 ; 节点标题中的 Zettel 编号（如果有的话）
+#IfWinActive ahk_class SunAwtFrame
 
 CopyTheBrainOutlineTitle() {
   Sleep, 100
