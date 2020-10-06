@@ -1,14 +1,14 @@
 
 ;; 通用快捷键
 ; 把 Alt + a 键映射为 Home 键
-!a::Home
+!a::SendInput {Home}
   ; 如果同时按下 Shift 键，等同于 Shift + Home
   +!a::SendInput, {LShift down}{Home}
   ; 如果同时按下 Ctrl 键，等同蝓 Ctrl + Home
   ^!a::SendInput, {LCtrl down}{Home}
 
 ; 把 Alt + e 键映射为 End 键
-!e::End
+!e::SendInput {End}
   ; 如果同时按下 Shift 键，等同于 Shift + End
   +!e::SendInput, {LShift down}{End}
   ; 如果同时按下 Ctrl 键，等同于 Ctrl + End
@@ -23,12 +23,8 @@
   +!h::SendInput, {LShift down}{Left}
   ; 如果同时按下 Ctrl 键，等同于 Ctrl + 左
   ^!h::SendInput, {LCtrl down}{Left}
-  ; Alt + o 也映射为 Alt + 左（代表 Zoom Out）
-  !o::SendInput, {LAlt down}{Left}
   ; 如果按下 Ctrl + Shift + h，则模仿 Ctrl + Shift + 左
   ^+h::SendInput, {LCtrl down}{LShift down}{Left}
-  ; 如果按下 Ctrl + Win + h，则模仿 Ctrl + Win + 左
-  ^#h::SendInput, {LCtrl down}{LWin down}{Left}
 
 ; 把 Alt + j 键映射为下方向键
 !j::SendInput, {Down}
@@ -60,8 +56,13 @@
   ^!l::SendInput, {LCtrl down}{Right}
   ; 如果同时按下 Ctrl + Shift + l，则模仿 Ctrl + Shift + 右
   ^+l::SendInput, {LCtrl down}{LShift down}{Right}
-  ; 如果按下 Ctrl + Win + l，则模仿 Ctrl + Win + 右
-  ^#l::SendInput, {LCtrl down}{LWin down}{Right}
+
+; Alt + o 映射为 Alt + 左（代表 Zoom Out）
+!o::SendInput, {LAlt down}{Left}
+!b::SendInput, {LAlt down}{Left}
+; Alt + i 映射为 Alt + 右（代表 Zoom ）
+!i::SendInput, {LAlt down}{Right}
+!f::SendInput, {LAlt down}{Right}
 ; 把 Alt + d 映射为删除键
 !d::SendInput, {Delete}
 
@@ -107,8 +108,8 @@ return
 return
 
 ^g::
-  CopyTheBrainOutlineTitle()
   old_clipboard := clipboard
+  CopyTheBrainOutlineTitle()
   zettel_array := StrSplit(clipboard, "-")
   clipboard := zettel_array[1]
   Sleep, 160
