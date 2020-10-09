@@ -73,6 +73,10 @@
 ; 在 TheBrain 8 中，输入 Alt + ; 可以快速添加新的孤立节点
 #IfWinActive ahk_class SunAwtFrame
 !SC027::SendInput, {Tab}{Enter}
+!h::Left
+!j::Down
+!k::Up
+!l::Right
 #IfWinActive
 ; 在 TheBrain8 中，输入 Alt + z 可以获取
 ; 节点标题中的 Zettel 编号（如果有的话）
